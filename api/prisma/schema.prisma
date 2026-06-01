@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+}
+
+model Article {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  title         String
+  excerpt       String
+  content       String
+  category      String
+  categoryLabel String
+  readTime      String
+  coverGradient String        @default("from-zinc-950/80 via-slate-900 to-black")
+  status        ArticleStatus @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([category, status])
+}
+
+model Topic {
+  id          String @id @default(cuid())
+  slug        String @unique
+  icon        String
+  title       String
+  description String
+  sortOrder   Int    @default(0)
+}
+
+model Project {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  stars       Int
+  url         String
+  tags        String
+  sortOrder   Int    @default(0)
+}

@@ -1,0 +1,1 @@
+export const PAGE_FADE_DURATION_MS = 1000;

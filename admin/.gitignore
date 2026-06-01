@@ -1,0 +1,7 @@
+# covered by root .gitignore; kept for tools that read per-package ignores
+node_modules/
+.next/
+out/
+.env
+.env.local
+.env.*.local
