@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
+import { getVisitAnalytics } from "../lib/analytics.js";
 import { toAdminArticle } from "../lib/db.js";
 import { parseMarkdownDocument } from "../lib/markdown-import.js";
 import { slugify } from "../lib/slugify.js";
@@ -47,6 +48,10 @@ function slugifyInput(input: string) {
 export async function registerAdminRoutes(app: FastifyInstance) {
   await app.register(async (admin) => {
     admin.addHook("preHandler", admin.authenticate);
+
+    admin.get("/analytics", async () => {
+      return getVisitAnalytics(admin.prisma);
+    });
 
     admin.get("/articles", async () => {
       const articles = await admin.prisma.article.findMany({

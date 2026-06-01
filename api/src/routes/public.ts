@@ -1,8 +1,35 @@
 import type { FastifyInstance } from "fastify";
+import { z } from "zod";
+import { collectVisit } from "../lib/analytics.js";
+import { getClientIp } from "../lib/client-ip.js";
 import { formatArticleDate, toAdminArticle, toPublicArticle } from "../lib/db.js";
+
+const collectVisitSchema = z.object({
+  path: z.string().min(1).max(512),
+  referer: z.string().max(512).optional(),
+});
 
 export async function registerPublicRoutes(app: FastifyInstance) {
   app.get("/api/health", async () => ({ ok: true }));
+
+  app.post("/api/analytics/collect", async (request, reply) => {
+    const parsed = collectVisitSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.status(400).send({ error: "Invalid payload" });
+    }
+
+    const userAgent =
+      typeof request.headers["user-agent"] === "string" ? request.headers["user-agent"] : "";
+
+    await collectVisit(app.prisma, {
+      ip: getClientIp(request),
+      path: parsed.data.path,
+      userAgent,
+      referer: parsed.data.referer ?? "",
+    });
+
+    return reply.status(204).send();
+  });
 
   app.get("/api/articles", async (request) => {
     const category =

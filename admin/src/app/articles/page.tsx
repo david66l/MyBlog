@@ -41,6 +41,9 @@ export default function ArticlesPage() {
           <h1 style={{ fontSize: "1.5rem", marginTop: "0.5rem" }}>Articles</h1>
         </div>
         <div className="row">
+          <Link className="btn" href="/analytics">
+            analytics_
+          </Link>
           <Link className="btn" href="/articles/import">
             import_md_
           </Link>

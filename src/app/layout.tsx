@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Orbitron, Space_Grotesk } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { VisitTracker } from "@/components/visit-tracker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -45,6 +46,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${orbitron.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-black text-foreground">
+        <VisitTracker />
         <SiteHeader />
         <div className="flex flex-1 flex-col pt-14">{children}</div>
         <SiteFooter />

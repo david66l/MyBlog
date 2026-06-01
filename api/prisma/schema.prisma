@@ -57,3 +57,15 @@ model Project {
   tags        String
   sortOrder   Int    @default(0)
 }
+
+model VisitLog {
+  id        String   @id @default(cuid())
+  ip        String
+  path      String
+  userAgent String   @default("")
+  referer   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([ip])
+  @@index([createdAt])
+}

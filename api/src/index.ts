@@ -13,7 +13,7 @@ const corsOrigin = process.env.CORS_ORIGIN?.split(",").map((item) => item.trim()
 ];
 
 async function main() {
-  const app = Fastify({ logger: true });
+  const app = Fastify({ logger: true, trustProxy: true });
   app.decorate("prisma", prisma);
 
   await app.register(cors, {

@@ -143,6 +143,32 @@ export async function importMarkdown(markdown: string, filename?: string) {
   });
 }
 
+export type VisitAnalytics = {
+  summary: {
+    totalVisits: number;
+    uniqueIps: number;
+    todayVisits: number;
+  };
+  visitors: {
+    ip: string;
+    visitCount: number;
+    firstSeen: string;
+    lastSeen: string;
+  }[];
+  recentLogs: {
+    id: string;
+    ip: string;
+    path: string;
+    userAgent: string;
+    referer: string;
+    createdAt: string;
+  }[];
+};
+
+export async function getVisitAnalytics() {
+  return adminFetch<VisitAnalytics>("/admin/analytics");
+}
+
 export const categoryOptions = [
   { slug: "astrobiology", label: "天体生物学" },
   { slug: "exoplanets", label: "系外行星" },
