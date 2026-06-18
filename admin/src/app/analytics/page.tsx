@@ -67,12 +67,17 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
-          <div className="card" style={{ marginBottom: "1.5rem" }}>
+          <div className="card" style={{ marginBottom: "1.5rem", overflowX: "auto" }}>
             <h2 style={{ fontSize: "1rem", marginBottom: "1rem" }}>按 IP 汇总</h2>
             <table className="table">
               <thead>
                 <tr>
                   <th>IP</th>
+                  <th>属地</th>
+                  <th>运营商</th>
+                  <th>浏览器</th>
+                  <th>系统</th>
+                  <th>设备</th>
                   <th>访问次数</th>
                   <th>首次访问</th>
                   <th>最近访问</th>
@@ -81,7 +86,7 @@ export default function AnalyticsPage() {
               <tbody>
                 {data.visitors.length === 0 && (
                   <tr>
-                    <td colSpan={4} style={{ color: "rgba(255,255,255,0.35)" }}>
+                    <td colSpan={9} style={{ color: "rgba(255,255,255,0.35)" }}>
                       暂无访问记录
                     </td>
                   </tr>
@@ -89,6 +94,11 @@ export default function AnalyticsPage() {
                 {data.visitors.map((visitor) => (
                   <tr key={visitor.ip}>
                     <td>{visitor.ip}</td>
+                    <td>{visitor.location}</td>
+                    <td>{visitor.isp ?? "—"}</td>
+                    <td>{visitor.browser}</td>
+                    <td>{visitor.os}</td>
+                    <td>{visitor.deviceLabel}</td>
                     <td>{visitor.visitCount}</td>
                     <td>{formatTime(visitor.firstSeen)}</td>
                     <td>{formatTime(visitor.lastSeen)}</td>
@@ -98,22 +108,26 @@ export default function AnalyticsPage() {
             </table>
           </div>
 
-          <div className="card">
+          <div className="card" style={{ overflowX: "auto" }}>
             <h2 style={{ fontSize: "1rem", marginBottom: "1rem" }}>最近 100 条访问</h2>
             <table className="table">
               <thead>
                 <tr>
                   <th>时间</th>
                   <th>IP</th>
+                  <th>属地</th>
+                  <th>运营商</th>
+                  <th>浏览器</th>
+                  <th>系统</th>
+                  <th>设备</th>
                   <th>路径</th>
-                  <th>Referer</th>
-                  <th>User-Agent</th>
+                  <th>来源</th>
                 </tr>
               </thead>
               <tbody>
                 {data.recentLogs.length === 0 && (
                   <tr>
-                    <td colSpan={5} style={{ color: "rgba(255,255,255,0.35)" }}>
+                    <td colSpan={9} style={{ color: "rgba(255,255,255,0.35)" }}>
                       暂无访问记录
                     </td>
                   </tr>
@@ -122,12 +136,14 @@ export default function AnalyticsPage() {
                   <tr key={log.id}>
                     <td>{formatTime(log.createdAt)}</td>
                     <td>{log.ip}</td>
+                    <td>{log.location}</td>
+                    <td>{log.isp || "—"}</td>
+                    <td>{log.browser}</td>
+                    <td>{log.os}</td>
+                    <td title={log.userAgent}>{log.deviceLabel}</td>
                     <td>{log.path}</td>
                     <td style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis" }}>
                       {log.referer || "—"}
-                    </td>
-                    <td style={{ maxWidth: 240, overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {log.userAgent || "—"}
                     </td>
                   </tr>
                 ))}

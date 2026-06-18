@@ -154,6 +154,12 @@ export type VisitAnalytics = {
     visitCount: number;
     firstSeen: string;
     lastSeen: string;
+    location: string;
+    isp: string;
+    browser: string;
+    os: string;
+    device: string;
+    deviceLabel: string;
   }[];
   recentLogs: {
     id: string;
@@ -161,6 +167,17 @@ export type VisitAnalytics = {
     path: string;
     userAgent: string;
     referer: string;
+    country: string;
+    region: string;
+    city: string;
+    location: string;
+    isp: string;
+    browser: string;
+    os: string;
+    device: string;
+    deviceBrand: string;
+    deviceModel: string;
+    deviceLabel: string;
     createdAt: string;
   }[];
 };

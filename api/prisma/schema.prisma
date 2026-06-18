@@ -59,12 +59,22 @@ model Project {
 }
 
 model VisitLog {
-  id        String   @id @default(cuid())
-  ip        String
-  path      String
-  userAgent String   @default("")
-  referer   String   @default("")
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  ip          String
+  path        String
+  userAgent   String   @default("")
+  referer     String   @default("")
+  country     String   @default("")
+  region      String   @default("")
+  city        String   @default("")
+  location    String   @default("")
+  isp         String   @default("")
+  browser     String   @default("")
+  os          String   @default("")
+  device      String   @default("")
+  deviceBrand String   @default("")
+  deviceModel String   @default("")
+  createdAt   DateTime @default(now())
 
   @@index([ip])
   @@index([createdAt])

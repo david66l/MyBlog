@@ -45,7 +45,7 @@ npm run dev
 
 默认管理员：
 
-- Email: `admin@louis.dev`
+- Email: `admin@louis-dev.cloud`
 - Password: `admin123`
 
 ### 2. 启动前台
@@ -152,7 +152,7 @@ npm run db:seed
 
 环境变量：
 
-- 前台：`NEXT_PUBLIC_API_URL=https://api.your-domain.com`
+- 前台：`NEXT_PUBLIC_API_URL=http://api.your-domain.com`（无 SSL 时用 `http`，不要用 `https`）
 - Admin：同上
 - API：`DATABASE_URL`、`JWT_SECRET`、`CORS_ORIGIN`（前台+Admin 域名）
 

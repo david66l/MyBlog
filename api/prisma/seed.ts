@@ -5,7 +5,7 @@ import { articles, projects, topics } from "../../src/lib/data.js";
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL ?? "admin@louis.dev";
+  const email = process.env.ADMIN_EMAIL ?? "admin@louis-dev.cloud";
   const password = process.env.ADMIN_PASSWORD ?? "admin123";
   const passwordHash = await bcrypt.hash(password, 10);
 

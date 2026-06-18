@@ -21,7 +21,7 @@ fi
 echo ""
 echo "启动 Louis.dev 开发环境"
 echo "  API:   http://localhost:4000"
-echo "  Admin: http://localhost:3001/login  (admin@louis.dev / admin123)"
+echo "  Admin: http://localhost:3001/login  (admin@louis-dev.cloud / admin123)"
 echo "  Web:   http://localhost:3000"
 echo "  Ctrl+C 停止全部服务"
 echo ""

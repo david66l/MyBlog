@@ -7,10 +7,17 @@ set -euo pipefail
 
 APP_DIR="${APP_DIR:-/var/www/louis-dev}"
 REPO_URL="${REPO_URL:-https://github.com/david66l/MyBlog.git}"
-DOMAIN="${DOMAIN:-louis.dev}"
-API_URL="https://api.${DOMAIN}"
-WEB_ORIGIN="https://${DOMAIN}"
-ADMIN_ORIGIN="https://admin.${DOMAIN}"
+DOMAIN="${DOMAIN:-louis-dev.cloud}"
+USE_HTTPS="${USE_HTTPS:-0}"
+if [[ "$USE_HTTPS" == "1" ]]; then
+  API_URL="https://api.${DOMAIN}"
+  WEB_ORIGIN="https://${DOMAIN}"
+  ADMIN_ORIGIN="https://admin.${DOMAIN}"
+else
+  API_URL="http://api.${DOMAIN}"
+  WEB_ORIGIN="http://${DOMAIN}"
+  ADMIN_ORIGIN="http://admin.${DOMAIN}"
+fi
 
 echo "==> 检查 sudo..."
 sudo -v
@@ -56,7 +63,7 @@ JWT_SECRET="${JWT_SECRET}"
 ADMIN_EMAIL="admin@${DOMAIN}"
 ADMIN_PASSWORD="${ADMIN_PASSWORD}"
 PORT=4000
-CORS_ORIGIN="${WEB_ORIGIN},${ADMIN_ORIGIN}"
+CORS_ORIGIN="${WEB_ORIGIN},http://www.${DOMAIN},${ADMIN_ORIGIN},http://124.221.25.80,http://124.221.25.80:8080"
 EOF
 
 cat > .env.local << EOF
@@ -91,9 +98,9 @@ pm2 save
 pm2 startup systemd -u "$USER" --hp "$HOME" 2>/dev/null | tail -1 | sudo bash || true
 
 echo "==> Nginx..."
-sudo cp deploy/nginx-louis.dev.conf /etc/nginx/sites-available/louis.dev
-sudo ln -sf /etc/nginx/sites-available/louis.dev /etc/nginx/sites-enabled/louis.dev
-sudo rm -f /etc/nginx/sites-enabled/default
+sudo cp "deploy/nginx-${DOMAIN}.conf" "/etc/nginx/sites-available/${DOMAIN}"
+sudo ln -sf "/etc/nginx/sites-available/${DOMAIN}" "/etc/nginx/sites-enabled/${DOMAIN}"
+sudo rm -f /etc/nginx/sites-enabled/louis.dev /etc/nginx/sites-enabled/default
 sudo nginx -t
 sudo systemctl reload nginx
 
@@ -109,7 +116,9 @@ echo "  Admin 账号: admin@${DOMAIN}"
 echo "  Admin 密码: ${ADMIN_PASSWORD}"
 echo "  JWT_SECRET 已写入 api/.env"
 echo ""
-echo "  下一步 HTTPS:"
-echo "  sudo apt install -y certbot python3-certbot-nginx"
-echo "  sudo certbot --nginx -d ${DOMAIN} -d www.${DOMAIN} -d api.${DOMAIN} -d admin.${DOMAIN}"
+if [[ "$USE_HTTPS" == "1" ]]; then
+  echo "  HTTPS 已启用（USE_HTTPS=1）"
+else
+  echo "  当前为纯 HTTP 部署（未配置 SSL）"
+fi
 echo "=============================================="

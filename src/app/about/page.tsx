@@ -30,7 +30,7 @@ export default function AboutPage() {
               {siteConfig.author}
             </h2>
             <p className="mt-3 leading-relaxed text-white/45">
-              全栈开发者，专注 AI 应用与工程实践。这个站点记录我在开发路上的实践、踩坑与思考。
+              全栈开发者，专注 AI 应用与工程实践。记录我在AI路上的每一步。
             </p>
           </div>
         </div>

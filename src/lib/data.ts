@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "Louis.dev",
   tagline: "Personal area — AI, space, and biology.",
   author: "Louis",
-  email: "hello@louis.dev",
+  email: "hello@louis-dev.cloud",
 };
 
 export const stats = [
@@ -376,16 +376,32 @@ export const projects: Project[] = [
 ];
 
 export const skills = [
+  "LLM",
+  "Transformer",
+  "Diffusion",
+  "LoRA/QLoRA",
+  "量化",
+  "vLLM推理加速",
+  "RAG",
+  "Agent",
+  "Harness Engineering",
+  "Agentic Engineering",
   "LangChain",
   "LangGraph",
-  "CrewAI",
-  "RAG",
-  "MCP",
+  "Agent scope",
+  "Milvus",
+  "FAISS",
   "Python",
+  "React",
   "TypeScript",
   "Next.js",
-  "Vector DB",
-  "Prompt Engineering",
+  "Node.js",
+  "Go",
+  "PostgreSQL",
+  "Redis",
+  "RabittMQ",
+  "Docker",
+  "K8s"
 ];
 
 export const currentlyLearning = [

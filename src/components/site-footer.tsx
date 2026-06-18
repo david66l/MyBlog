@@ -10,7 +10,7 @@ export function SiteFooter() {
             {[
               { label: "GitHub", href: "https://github.com" },
               { label: "Twitter", href: "https://twitter.com" },
-              { label: "Email", href: "mailto:hello@louis.dev" },
+              { label: "Email", href: "mailto:hello@louis-dev.cloud" },
             ].map((social) => (
               <Link
                 key={social.label}

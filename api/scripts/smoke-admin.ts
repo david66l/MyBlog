@@ -28,7 +28,7 @@ function assert(condition: unknown, message: string) {
 async function main() {
   const login = await request("/auth/login", {
     method: "POST",
-    body: JSON.stringify({ email: "admin@louis.dev", password: "admin123" }),
+    body: JSON.stringify({ email: "admin@louis-dev.cloud", password: "admin123" }),
   });
   assert(login.status === 200, `login failed: ${login.status} ${login.body}`);
   const { token } = JSON.parse(login.body) as { token: string };
