@@ -13,7 +13,7 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   try {
@@ -25,7 +25,6 @@ export async function generateStaticParams() {
 }
 
 export const dynamicParams = true;
-export const revalidate = 3600; // ISR: 1小时缓存，减轻 RSC 传输压力
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
