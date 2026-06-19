@@ -69,10 +69,28 @@ export default async function ArticlePage({ params }: PageProps) {
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight, rehypeRaw]}
           components={{
+            // 阻止 react-markdown 的默认 <pre> 包裹（CodeBlock 自己管理）
+            pre({ children }) {
+              return <>{children}</>;
+            },
             code({ className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || "");
               const lang = match ? match[1] : "";
               const code = String(children).replace(/\n$/, "");
+
+              // Mermaid 图表：用 pre 保留原始文本（后续可加 mermaid 渲染）
+              if (lang === "mermaid") {
+                return (
+                  <div className="group relative my-6 overflow-hidden rounded-sm border border-white/[0.08] bg-[#050505]">
+                    <div className="flex items-center border-b border-white/[0.06] px-4 py-2">
+                      <span className="font-mono text-[10px] tracking-[0.15em] text-white/35 uppercase">mermaid</span>
+                    </div>
+                    <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
+                      <code className="font-mono text-white/50">{code}</code>
+                    </pre>
+                  </div>
+                );
+              }
 
               // 行内代码
               if (!lang && !String(children).includes("\n")) {
@@ -83,7 +101,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 );
               }
 
-              // 代码块
+              // 代码块（复用 CodeBlock，它自带 <pre>）
               return <CodeBlock language={lang || "code"} code={code} />;
             },
             table({ children }) {
