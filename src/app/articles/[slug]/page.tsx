@@ -4,7 +4,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
-import { CodeBlock } from "@/components/code-block";
 import {
   fetchAdjacentArticles,
   fetchArticle,
@@ -78,7 +77,7 @@ export default async function ArticlePage({ params }: PageProps) {
               const lang = match ? match[1] : "";
               const code = String(children).replace(/\n$/, "");
 
-              // Mermaid 图表：用 pre 保留原始文本（后续可加 mermaid 渲染）
+              // Mermaid 图表
               if (lang === "mermaid") {
                 return (
                   <div className="group relative my-6 overflow-hidden rounded-sm border border-white/[0.08] bg-[#050505]">
@@ -101,8 +100,30 @@ export default async function ArticlePage({ params }: PageProps) {
                 );
               }
 
-              // 代码块（复用 CodeBlock，它自带 <pre>）
-              return <CodeBlock language={lang || "code"} code={code} />;
+              // 代码块：用 CodeBlock 外壳 + rehype-highlight 的高亮 HTML
+              // rehype-highlight 已经把 children 转成了 <span class="hljs-*"> 结构
+              return (
+                <div className="group relative overflow-hidden rounded-sm border border-white/[0.08] bg-[#050505]">
+                  <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2">
+                    <span className="font-mono text-[10px] tracking-[0.15em] text-white/35 uppercase">{lang || "code"}</span>
+                    <button
+                      type="button"
+                      className="font-mono text-[10px] tracking-wider text-white/35 uppercase transition-colors hover:text-white"
+                      onClick={async (e) => {
+                        await navigator.clipboard.writeText(code);
+                        const btn = e.currentTarget;
+                        btn.textContent = "copied";
+                        setTimeout(() => { btn.textContent = "copy"; }, 2000);
+                      }}
+                    >
+                      copy
+                    </button>
+                  </div>
+                  <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
+                    <code className={className} {...props}>{children}</code>
+                  </pre>
+                </div>
+              );
             },
             table({ children }) {
               return (
