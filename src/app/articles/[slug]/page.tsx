@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import {
   fetchAdjacentArticles,
@@ -67,7 +66,7 @@ export default async function ArticlePage({ params }: PageProps) {
       <article className="prose-article mx-auto max-w-[720px] px-6 py-16 lg:px-10">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeHighlight, rehypeRaw]}
+          rehypePlugins={[rehypeRaw]}
           components={{
             // 阻止 react-markdown 的默认 <pre> 包裹（CodeBlock 自己管理）
             pre({ children }) {
