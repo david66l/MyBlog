@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
 import { CodeBlock } from "@/components/code-block";
 import {
   fetchAdjacentArticles,
@@ -12,49 +16,6 @@ interface PageProps {
 }
 
 export const dynamic = "force-dynamic";
-
-function renderContent(content: string) {
-  const blocks = content.split(/(```[\s\S]*?```)/g);
-
-  return blocks.map((block, i) => {
-    const codeMatch = block.match(/^```(\w*)\n([\s\S]*?)```$/);
-    if (codeMatch) {
-      const [, lang, code] = codeMatch;
-      return <CodeBlock key={i} language={lang || "code"} code={code.trim()} />;
-    }
-
-    return (
-      <div
-        key={i}
-        className="prose-article"
-        dangerouslySetInnerHTML={{
-          __html: block
-            .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-            .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-            .replace(/^\d+\. \*\*(.+?)\*\* — (.+)$/gm, "<li><strong>$1</strong> — $2</li>")
-            .replace(/^- \*\*(.+?)\*\* — (.+)$/gm, "<li><strong>$1</strong> — $2</li>")
-            .replace(/^- (.+)$/gm, "<li>$1</li>")
-            .replace(/^\|(.+)\|$/gm, (_, row) => {
-              const cells = row.split("|").map((c: string) => c.trim());
-              if (cells.every((c: string) => /^[-:]+$/.test(c))) return "";
-              const tag = cells.some((c: string) => c.includes("---")) ? "" : "td";
-              if (!tag) return "";
-              return `<tr>${cells.map((c: string) => `<${tag}>${c}</${tag}>`).join("")}</tr>`;
-            })
-            .replace(/(<li>[\s\S]*?<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`)
-            .replace(/(<tr>[\s\S]*?<\/tr>\n?)+/g, (match) => `<table>${match}</table>`)
-            .split("\n\n")
-            .filter(Boolean)
-            .map((p) => {
-              if (p.startsWith("<")) return p;
-              return `<p>${p}</p>`;
-            })
-            .join(""),
-        }}
-      />
-    );
-  });
-}
 
 export async function generateStaticParams() {
   try {
@@ -90,7 +51,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <span className="absolute top-0 right-0 h-8 w-8 border-t border-r border-white/15" />
           </div>
           <p className="font-mono text-[11px] tracking-[0.3em] text-white/40 uppercase">
-            // {article.categoryLabel}
+            {"// "}{article.categoryLabel}
           </p>
           <h1 className="mt-4 font-[family-name:var(--font-orbitron)] text-[clamp(1.25rem,3vw,1.75rem)] font-semibold uppercase leading-snug tracking-[0.08em] text-white">
             {article.title}
@@ -103,8 +64,70 @@ export default async function ArticlePage({ params }: PageProps) {
         </div>
       </header>
 
-      <article className="mx-auto max-w-[720px] px-6 py-16 lg:px-10">
-        {renderContent(article.content)}
+      <article className="prose-article mx-auto max-w-[720px] px-6 py-16 lg:px-10">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight, rehypeRaw]}
+          components={{
+            code({ className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              const lang = match ? match[1] : "";
+              const code = String(children).replace(/\n$/, "");
+
+              // 行内代码
+              if (!lang && !String(children).includes("\n")) {
+                return (
+                  <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-sm text-white/70" {...props}>
+                    {children}
+                  </code>
+                );
+              }
+
+              // 代码块
+              return <CodeBlock language={lang || "code"} code={code} />;
+            },
+            table({ children }) {
+              return (
+                <div className="overflow-x-auto">
+                  <table>{children}</table>
+                </div>
+              );
+            },
+            blockquote({ children }) {
+              return (
+                <blockquote className="border-l-2 border-white/20 pl-4 italic text-white/50">
+                  {children}
+                </blockquote>
+              );
+            },
+            a({ href, children }) {
+              return (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/70 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-white/50"
+                >
+                  {children}
+                </a>
+              );
+            },
+            hr() {
+              return <hr className="my-8 border-white/[0.08]" />;
+            },
+            img({ src, alt }) {
+              return (
+                <img
+                  src={src}
+                  alt={alt || ""}
+                  className="my-6 rounded-sm border border-white/[0.08]"
+                />
+              );
+            },
+          }}
+        >
+          {article.content}
+        </ReactMarkdown>
       </article>
 
       <nav className="mx-auto grid max-w-[720px] grid-cols-2 gap-4 border-t border-white/[0.06] px-6 py-12 lg:px-10">
